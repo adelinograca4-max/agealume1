@@ -1,161 +1,320 @@
-<!DOCTYPE html><html lang="pt-AO">
+<!DOCTYPE html>
+<html lang="pt-AO">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AGEALume – Ecossistema Digital Angola</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-/* [INSERE TODO O CSS QUE VOCÊ JÁ ME ENVIOU AQUI] */
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGEALume – Ecossistema Digital Angola</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-img { display: flex; align-items: center; gap: 10px; }
+        .logo span {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 26px;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .back-btn.visible { opacity: 1; pointer-events: auto; }
+
+        /* VIEWS CONTROL */
+        .view { display: none; padding: 20px; min-height: 90vh; animation: slideUp 0.4s ease-out; }
+        .view.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DASHBOARD */
+        .dashboard-hero { padding: 20px 0; }
+        .eyebrow { color: var(--gold); text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+        .dashboard-hero h1 { font-family: 'Playfair Display', serif; font-size: 32px; margin: 5px 0; }
+        .dashboard-hero h1 span { color: var(--gold); }
+        .gold-divider { height: 3px; width: 40px; background: var(--gold); margin: 15px 0 30px; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .dash-card {
+            background: var(--card-bg);
+            padding: 25px 15px;
+            border-radius: 16px;
+            border: 1px solid var(--glass);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .dash-card:active { transform: scale(0.95); background: var(--glass); }
+        .dash-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+        .dash-label { font-weight: 700; font-size: 15px; display: block; }
+        .dash-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+        .dash-badge { 
+            position: absolute; top: 10px; right: 10px; 
+            background: var(--gold); color: #000; font-size: 9px; 
+            font-weight: 900; padding: 2px 6px; border-radius: 4px;
+        }
+
+        /* CHAT VIEW */
+        .chat-container {
+            display: flex; flex-direction: column; height: 75vh;
+            background: var(--card-bg); border-radius: 20px; overflow: hidden;
+        }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .chat-bubble { padding: 12px 16px; border-radius: 15px; max-width: 85%; font-size: 14px; }
+        .chat-bubble.user { background: var(--gold); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-bubble.assistant { background: #333; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .bubble-label { font-size: 10px; font-weight: 700; margin-bottom: 4px; opacity: 0.7; }
+        
+        .chat-input-row { display: flex; align-items: center; padding: 15px; background: #252525; gap: 10px; }
+        .chat-input { flex: 1; background: transparent; border: none; color: #fff; outline: none; resize: none; height: 24px; }
+        .chat-send { background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: #000; font-weight: bold; }
+
+        /* MARKETPLACE */
+        .market-filters { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-btn { 
+            background: var(--glass); border: 1px solid var(--glass); color: #fff; 
+            padding: 8px 20px; border-radius: 20px; white-space: nowrap; cursor: pointer;
+        }
+        .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+        .books-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .book-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass); }
+        .book-cover { height: 160px; background: #2a2a2a; position: relative; }
+        .book-cover-img { width: 100%; height: 100%; background: linear-gradient(45deg, #1a1a1a, #333); }
+        .book-info { padding: 12px; }
+        .book-cat { font-size: 10px; color: var(--gold); text-transform: uppercase; font-weight: 700; }
+        .book-title { font-size: 14px; font-weight: 500; margin: 4px 0; }
+        .book-price { font-weight: 700; font-size: 13px; }
+        .book-price.free { color: #4cd137; }
+
+        .btn-secondary { width: 100%; margin-top: 20px; padding: 12px; border-radius: 8px; border: 1px dashed var(--gold); background: transparent; color: var(--gold); cursor: pointer; }
+        
+        /* UTILITARIOS */
+        .page-title { font-family: 'Playfair Display', serif; font-size: 28px; }
+        .page-desc { color: var(--text-dim); }
+        
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #000; padding: 10px 25px; border-radius: 30px;
+            font-weight: 700; opacity: 0; transition: 0.3s; z-index: 2000; pointer-events: none;
+        }
+        .toast.show { opacity: 1; bottom: 40px; }
+    </style>
 </head>
-<body><header class="site-header">
-  <div class="logo-img" onclick="goHome()" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
-    <img src="data:image/jpeg;base64,[...base64...]" alt="AGEALume" style="height:36px;">
+<body>
+
+<header class="site-header">
+  <div class="logo-img" onclick="goHome()">
     <div class="logo"><span>AGEALume</span></div>
   </div>
-  <button class="back-btn" id="backBtn">Voltar</button>
-</header><!-- VIEWS --><div id="view-dashboard" class="view active">
+  <button class="back-btn" id="backBtn">Sair</button>
+</header>
+
+<div id="view-dashboard" class="view active">
   <div class="dashboard-hero">
-    <div class="eyebrow">Painel</div>
-    <h1>Bem-vindo, <span>Usuário</span></h1>
-    <p>Explore seu ecossistema digital em Angola.</p>
+    <div class="eyebrow">Digital Angola</div>
+    <h1>Olá, <span>Visitante</span></h1>
+    <p>O que deseja explorar hoje?</p>
   </div>
   <div class="gold-divider"></div>
   <div class="dashboard-grid">
     <div class="dash-card" data-target="view-chat">
       <div class="dash-icon">💬</div>
       <div class="dash-label">Chat AGEA</div>
-      <div class="dash-sub">Interaja com a inteligência AGEA</div>
+      <div class="dash-sub">Inteligência Artificial</div>
     </div>
     <div class="dash-card" data-target="view-marketplace">
       <div class="dash-icon">📚</div>
       <div class="dash-label">Marketplace</div>
-      <div class="dash-sub">Veja livros e publicações</div>
+      <div class="dash-sub">Livros e Cursos</div>
     </div>
     <div class="dash-card" data-target="view-profile">
       <div class="dash-icon">👤</div>
-      <div class="dash-label">Perfil</div>
-      <div class="dash-sub">Configurações do usuário</div>
+      <div class="dash-label">Meu Perfil</div>
+      <div class="dash-sub">Configurações</div>
     </div>
     <div class="dash-card" data-target="view-admin">
       <div class="dash-icon">⚙️</div>
-      <div class="dash-label">Administração</div>
-      <div class="dash-sub">Acesso restrito</div>
-      <div class="dash-badge">Novo</div>
+      <div class="dash-label">Admin</div>
+      <div class="dash-sub">Gestão do Sistema</div>
+      <div class="dash-badge">RESTRITO</div>
     </div>
   </div>
-</div><div id="view-chat" class="view">
+</div>
+
+<div id="view-chat" class="view">
+  <h2 class="page-title">Chat AGEA</h2>
   <div class="chat-container">
-    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-bubble assistant">
+            <div class="bubble-label">AGEA</div>
+            Olá! Como posso ajudar você hoje?
+        </div>
+    </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="Escreva sua mensagem..."></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="Escreva aqui..."></textarea>
       <button class="chat-send" id="chatSend">➤</button>
     </div>
   </div>
-</div><div id="view-marketplace" class="view">
+</div>
+
+<div id="view-marketplace" class="view">
+  <h2 class="page-title">Biblioteca</h2>
   <div class="market-filters">
     <button class="filter-btn active">Todos</button>
-    <button class="filter-btn">Grátis</button>
-    <button class="filter-btn">Pago</button>
+    <button class="filter-btn">E-books</button>
+    <button class="filter-btn">Áudios</button>
   </div>
   <div class="books-grid">
     <div class="book-card">
       <div class="book-cover"><div class="book-cover-img"></div></div>
       <div class="book-info">
-        <div class="book-cat">Categoria</div>
-        <div class="book-title">Livro 1</div>
+        <div class="book-cat">Educação</div>
+        <div class="book-title">Lógica de Programação</div>
         <div class="book-price free">Grátis</div>
       </div>
     </div>
     <div class="book-card">
       <div class="book-cover"><div class="book-cover-img"></div></div>
       <div class="book-info">
-        <div class="book-cat">Categoria</div>
-        <div class="book-title">Livro 2</div>
-        <div class="book-price">$5</div>
+        <div class="book-cat">Finanças</div>
+        <div class="book-title">Investir em AO</div>
+        <div class="book-price">Kz 5.000</div>
       </div>
     </div>
   </div>
-  <button class="btn-secondary" id="togglePublish">Publicar Novo</button>
-  <div class="publish-form" id="publishForm">
-    <div class="form-group">
-      <label class="form-label">Título</label>
-      <input type="text" class="form-input">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Descrição</label>
-      <textarea class="form-textarea"></textarea>
-    </div>
-    <button class="btn-primary">Enviar</button>
+  <button class="btn-secondary" onclick="showToast('Função disponível em breve!')">Publicar Novo</button>
+</div>
+
+<div id="view-profile" class="view">
+  <h2 class="page-title">Perfil</h2>
+  <div class="dash-card" style="text-align: left; margin-top: 20px;">
+      <p><strong>Nome:</strong> Usuário Exemplo</p>
+      <p><strong>Email:</strong> user@agealume.ao</p>
+      <p><strong>Nível:</strong> Standard</p>
   </div>
-</div><div id="view-profile" class="view page-wrap">
-  <h2 class="page-title">Perfil do Usuário</h2>
-  <p class="page-desc">Configurações, preferências e informações pessoais.</p>
-</div><div id="view-admin" class="view page-wrap">
+</div>
+
+<div id="view-admin" class="view">
   <h2 class="page-title">Administração</h2>
-  <p class="page-desc">Área restrita para administradores.</p>
-</div><!-- Toast Notification --><div class="toast" id="toast">Mensagem</div><script>
-// Navegação de Views
+  <p class="page-desc">Por favor, insira suas credenciais de administrador para prosseguir.</p>
+  <input type="password" placeholder="Senha de Acesso" style="width:100%; padding:15px; border-radius:10px; background:#222; border:1px solid var(--gold); color:white; margin-top:20px;">
+</div>
+
+<div class="toast" id="toast">Mensagem</div>
+
+<script>
 const views = document.querySelectorAll('.view');
 const dashCards = document.querySelectorAll('.dash-card');
 const backBtn = document.getElementById('backBtn');
 let currentView = document.querySelector('.view.active');
 
 function showView(viewId) {
-  currentView.classList.remove('active');
-  const newView = document.getElementById(viewId);
-  newView.classList.add('active');
-  currentView = newView;
-  backBtn.classList.toggle('visible', viewId !== 'view-dashboard');
+    currentView.classList.remove('active');
+    const newView = document.getElementById(viewId);
+    if(newView) {
+        newView.classList.add('active');
+        currentView = newView;
+        // Mostra o botão "Voltar/Sair" se não estiver no dashboard
+        backBtn.classList.toggle('visible', viewId !== 'view-dashboard');
+        window.scrollTo(0, 0);
+    }
 }
 
 dashCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const target = card.getAttribute('data-target');
-    if (target) showView(target);
-  });
+    card.addEventListener('click', () => {
+        const target = card.getAttribute('data-target');
+        if (target) showView(target);
+    });
 });
 
 backBtn.addEventListener('click', () => showView('view-dashboard'));
-
 function goHome() { showView('view-dashboard'); }
 
-// Chat functionality
+// Lógica de Chat
 const chatSend = document.getElementById('chatSend');
 const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
 
 chatSend.addEventListener('click', () => {
-  const msg = chatInput.value.trim();
-  if(!msg) return;
-  const userBubble = document.createElement('div');
-  userBubble.className = 'chat-bubble user';
-  userBubble.textContent = msg;
-  chatMessages.appendChild(userBubble);
-  chatInput.value = '';
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+    const msg = chatInput.value.trim();
+    if(!msg) return;
 
-  // Resposta simples do assistant
-  const assistantBubble = document.createElement('div');
-  assistantBubble.className = 'chat-bubble assistant';
-  assistantBubble.innerHTML = '<div class="bubble-label">AGEA</div>Recebido: ' + msg;
-  chatMessages.appendChild(assistantBubble);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Mensagem Usuário
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-bubble user';
+    userDiv.textContent = msg;
+    chatMessages.appendChild(userDiv);
+    
+    chatInput.value = '';
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Resposta Simulada
+    setTimeout(() => {
+        const botDiv = document.createElement('div');
+        botDiv.className = 'chat-bubble assistant';
+        botDiv.innerHTML = `<div class="bubble-label">AGEA</div>Estou processando sua solicitação sobre: "${msg}"`;
+        chatMessages.appendChild(botDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 800);
 });
 
-// Toggle publish form
-const togglePublish = document.getElementById('togglePublish');
-const publishForm = document.getElementById('publishForm');
-togglePublish.addEventListener('click', () => {
-  publishForm.classList.toggle('visible');
-});
-
-// Toast example
-function showToast(message, duration=3000){
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'), duration);
+function showToast(message){
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
-</script></body>
+</script>
+
+</body>
 </html>
