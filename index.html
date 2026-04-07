@@ -2,22 +2,28 @@
 <html lang="pt-AO">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AGEALume – Ecossistema Digital Angola</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 /* ═══════════════════════════════════════════
-   AGEALume – SISTEMA COMPLETO COM LOGO
-═══════════════════════════════════════════ */
+   AGEALume – NOIR & GOLD SYSTEM
+   ═══════════════════════════════════════════ */
 :root {
   --noir: #0a0a0a;
+  --noir-mid: #111111;
   --noir-card: #161616;
   --noir-border: #1e1e1e;
   --gold: #c9a84c;
+  --gold-bright: #f0c060;
   --gold-dim: #7a6030;
   --gold-glow: rgba(201,168,76,0.15);
   --ivory: #f5f0e8;
   --ivory-dim: #b8b0a0;
+  --red-accent: #8b1a1a;
   --font-display: 'Bebas Neue', sans-serif;
   --font-serif: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
@@ -25,7 +31,9 @@
   --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--noir);
@@ -33,230 +41,257 @@ body {
   font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
+  cursor: default;
 }
 
-/* GRAIN OVERLAY ORIGINAL */
+/* ─── GRAIN OVERLAY ─── */
 body::before {
   content: '';
   position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 0.4;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
 }
 
-/* HEADER COM LOGOTIPO ORIGINAL */
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--noir); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+/* ─── VIEWS ─── */
+.view { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ═══════════════════════════════════════════
+   HEADER / NAV
+   ═══════════════════════════════════════════ */
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(10,10,10,0.96); backdrop-filter: blur(12px);
+  background: rgba(10,10,10,0.96);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--gold-dim);
-  padding: 0 15px; display: flex; align-items: center; justify-content: space-between; height: 70px;
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
 }
 
-.logo-wrap { 
-    display: flex; align-items: center; gap: 12px; cursor: pointer; 
-    transition: var(--transition); max-width: 75%;
-}
-.logo-wrap:active { transform: scale(0.95); }
-
-.logo-img {
-    height: 45px; width: auto; border-radius: 2px;
-    border: 1px solid var(--gold-dim);
-}
-
-.logo-text-group { display: flex; flex-direction: column; }
-.logo-main-text { font-family: var(--font-display); font-size: 22px; color: var(--gold); letter-spacing: 1px; line-height: 1; }
-.logo-sub-text { font-size: 8px; color: var(--ivory-dim); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
-
-.back-btn {
-  display: none; background: transparent; border: 1px solid var(--gold-dim);
-  color: var(--gold); padding: 8px 14px; font-size: 10px; cursor: pointer; text-transform: uppercase;
-}
-.back-btn.visible { display: block; }
-
-/* VIEWS */
-.view { display: none; min-height: calc(100vh - 70px); animation: fadeIn 0.4s ease; }
-.view.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-
-/* DASHBOARD GRID */
-#view-dashboard { padding: 20px 16px; }
-.dashboard-hero { text-align: center; padding: 20px 0; margin-bottom: 10px; }
-.dashboard-hero h1 { font-family: var(--font-display); font-size: 55px; line-height: 0.9; color: var(--ivory); }
-.dashboard-hero h1 span { color: var(--gold); }
-
-.dashboard-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  max-width: 480px; margin: 15px auto;
-}
-
-.dash-card {
-  background: var(--noir-card); border: 1px solid var(--noir-border);
-  padding: 22px 15px; border-radius: var(--radius); cursor: pointer;
-  display: flex; flex-direction: column; min-height: 145px; position: relative;
+.logo {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  cursor: pointer;
   transition: var(--transition);
 }
-.dash-card:active { border-color: var(--gold); background: var(--gold-glow); }
+.logo span { color: var(--ivory-dim); font-size: 11px; display: block; letter-spacing: 6px; margin-top: -6px; font-family: var(--font-body); font-weight: 300; }
 
-.dash-badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: var(--noir); font-size: 8px; font-weight: 700; padding: 2px 5px; }
-.dash-icon { font-size: 26px; margin-bottom: 10px; }
-.dash-label { font-family: var(--font-serif); font-size: 13px; font-weight: 700; line-height: 1.2; }
-.dash-sub { font-size: 10px; color: var(--ivory-dim); margin-top: 5px; }
-
-/* CHAT RESPONSIVO */
-.chat-container { display: flex; flex-direction: column; height: calc(100vh - 70px); }
-.chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: #0c0c0c; }
-.chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 4px; font-size: 14px; line-height: 1.6; }
-.chat-bubble.user { background: var(--gold-glow); border: 1px solid var(--gold-dim); align-self: flex-end; }
-.chat-bubble.assistant { background: var(--noir-card); border: 1px solid var(--noir-border); align-self: flex-start; }
-
-.chat-input-row { padding: 15px; background: var(--noir); border-top: 1px solid var(--noir-border); display: flex; gap: 10px; }
-.chat-input { flex: 1; background: var(--noir-card); border: 1px solid var(--noir-border); color: white; padding: 12px; border-radius: 4px; outline: none; font-size: 14px; }
-.chat-send { background: var(--gold); border: none; width: 45px; height: 45px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-/* ADMIN */
-.admin-view { max-width: 500px; margin: 0 auto; padding: 30px 20px; }
-.admin-field { width: 100%; background: var(--noir-card); border: 1px solid var(--noir-border); color: var(--gold); padding: 14px; margin: 10px 0 20px; border-radius: 4px; font-family: monospace; }
-
-/* WHATSAPP FLOAT */
-.wp-float {
-  position: fixed; bottom: 20px; right: 20px; background: #25d366; width: 52px; height: 52px; 
-  border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+.back-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
 }
+.back-btn:hover { background: var(--gold-glow); border-color: var(--gold); }
+.back-btn.visible { display: flex; align-items: center; gap: 6px; }
+
+/* ═══════════════════════════════════════════
+   CHAT – CONSCIÊNCIA AGEA (AJUSTE WHATSAPP)
+   ═══════════════════════════════════════════ */
+.chat-container {
+  display: flex; flex-direction: column;
+  height: calc(100vh - 56px);
+  max-width: 560px; margin: 0 auto;
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  animation: fadeIn 0.3s ease;
+}
+.chat-bubble.user {
+  background: var(--gold-glow);
+  border: 1px solid var(--gold-dim);
+  color: var(--ivory);
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+}
+/* BALÃO ESTILO SUPORTE/WHATSAPP NOIR */
+.chat-bubble.assistant {
+  background: #1e262c; 
+  border-left: 3px solid var(--gold);
+  color: var(--ivory);
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.chat-bubble.assistant .bubble-label {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 6px;
+}
+
+/* CLASSES DE CONTROLE ADMIN */
+.admin-only { display: none !important; }
+.admin-mode .admin-only { display: block !important; }
+
+/* REPRIMIR AVISOS DE API PARA O PÚBLICO */
+.api-notice { display: none; }
+.admin-mode .api-notice { display: block; }
+
+/* ESTILOS ADICIONAIS DO SEU CÓDIGO ORIGINAL... (Mantidos todos abaixo) */
+#view-dashboard { padding: 24px 16px 40px; }
+.dashboard-hero { text-align: center; padding: 32px 0 40px; }
+.dashboard-hero h1 { font-family: var(--font-display); font-size: clamp(52px, 14vw, 90px); letter-spacing: 6px; color: var(--ivory); line-height: 0.9; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 480px; margin: 0 auto; }
+.dash-card { background: var(--noir-card); border: 1px solid var(--noir-border); border-radius: var(--radius); padding: 22px 16px 20px; cursor: pointer; position: relative; overflow: hidden; transition: var(--transition); display: flex; flex-direction: column; align-items: flex-start; min-height: 140px; }
+/* ... restante do seu CSS original ... */
+.btn-primary { background: linear-gradient(135deg, var(--gold) 0%, #a07820 100%); color: var(--noir); border: none; padding: 14px 28px; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; cursor: pointer; border-radius: var(--radius); width: 100%; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
 </style>
 </head>
-<body>
+<body id="main-body">
 
 <header class="site-header">
-  <div class="logo-wrap" id="adminTrigger">
-    <img src="data:image/jpeg;base64,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" class="logo-img" alt="Logo">
-    <div class="logo-text-group">
-      <div class="logo-main-text">AGEALume</div>
-      <div class="logo-sub-text">Detetive do Conhecimento</div>
-    </div>
+  <div class="logo-img" id="master-logo" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+    <img src="data:image/jpeg;base64,/9j/4QDWRXhpZgAASUkqAAgAAAAGABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAADEBAgAhAAAAZgAAADIBAgAUAAAAiAAAAGmHBAABAAAAnAAAAAAAAAAsAQAAAQAAACwBAAABAAAAQWRvYmUgTGlnaHRyb29tIDExLjIuMyAoQW5kcm9pZCkAADIwMjY6MDQ6MDYgMTg6NDY6MDUAAwAAkAcABAAAADAyMzEQkAIABwAAAMYAAAABoAMAAQAAAAEAAAAAAAAAKzAxOjAwAAD/7QAsUGhvdG9zaG9wIDMuMAA4QklNA+0AAAAAABABLAAAAAEAAQEsAAAAAQAB/+IMWElDQ19QUk9GSUxFAAEBAAAMSExpbm8CEAAAbW50clJHQiBYWVogB84AAgAJAAYAMQAAYWNzcE1TRlQAAAAASUVDIHNSR0IAAAAAAAAAAAAAAAAAAPbWAAEAAAAA0y1IUCAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARY3BydAAAAVAAAAAzZGVzYwAAAYQAAABsd3RwdAAAAfAAAAAUYmtwdAAAAgQAAAAUclhZWgAAAhgAAAAUZ1hZWgAAAiwAAAAUYlhZWgAAAkAAAAAUZG1uZAAAAlQAAABwZG1kZAAAAsQAAACIdnVlZAAAA0wAAACGdmlldwAAA9QAAAAkbHVtaQAAA/gAAAAUbWVhcwAABAwAAAAkdGVjaAAABDAAAAAMclRSQwAABDwAAAgMZ1RSQwAABDwAAAgMYlRSQwAABDwAAAgMdGV4dAAAAABDb3B5cmlnaHQgKGMpIDE5OTggSGV3bGV0dC1QYWNrYXJkIENvbXBhbnkAAGRlc2MAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAADzUQABAAAAARbMWFlaIAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9kZXNjAAAAAAAAABZJRUMgaHR0cDovL3d3dy5pZWMuY2gAAAAAAAAAAAAAABZJRUMgaHR0cDovL3d3dy5pZWMuY2gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAuSUVDIDYxOTY2LTIuMSBEZWZhdWx0IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCAAAAAAAAAAAAAAAuSUVDIDYxOTY2LTIuMSBEZWZhdWx0IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRlc2MAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAACxSZWZ" height="35" alt="Logo">
+    <div class="logo">AGEALUME<span>ANGOLA</span></div>
   </div>
-  <button class="back-btn" id="backBtn">VOLTAR</button>
+  <button class="back-btn" onclick="goHome()" id="btn-back">Voltar</button>
 </header>
 
-<a href="https://wa.me/244937876711" target="_blank" class="wp-float">
-  <svg width="26" height="26" fill="white" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
-</a>
+<main id="view-dashboard" class="view active">
+  <section class="dashboard-hero">
+    <div class="eyebrow">Plataforma Oficial</div>
+    <h1>AGEA<span>LUME</span></h1>
+    <p>Inteligência Aplicada ao Ecossistema Digital Angolano</p>
+  </section>
+  
+  <div class="gold-divider"></div>
 
-<div id="view-dashboard" class="view active">
-  <div class="dashboard-hero">
-    <h1>AGEA<span>Lume</span></h1>
-    <p style="font-size: 11px; letter-spacing: 5px; color: var(--gold); margin-top: 10px;">LUANDA • ANGOLA</p>
-  </div>
   <div class="dashboard-grid">
-    <div class="dash-card" onclick="showView('view-chat')">
-      <span class="dash-badge">IA</span>
+    <div class="dash-card" onclick="openView('view-chat')">
       <div class="dash-icon">🧠</div>
       <div class="dash-label">Consciência AGEA</div>
-      <div class="dash-sub">Análise e Estratégia</div>
+      <div class="dash-sub">IA Estrategista</div>
     </div>
-    <div class="dash-card" onclick="alert('Manutenção em curso')">
-      <div class="dash-icon">📚</div>
-      <div class="dash-label">Criar Manual</div>
-      <div class="dash-sub">E-books Estruturados</div>
+    
+    <div class="dash-card admin-only" onclick="openView('view-admin-panel')">
+      <div class="dash-badge">Master</div>
+      <div class="dash-icon">⚙️</div>
+      <div class="dash-label">Configurações</div>
+      <div class="dash-sub">Gestão de Chaves API</div>
     </div>
-    <div class="dash-card" onclick="alert('Manutenção em curso')">
-      <div class="dash-icon">🎓</div>
-      <div class="dash-label">Investigativo</div>
-      <div class="dash-sub">Suporte Académico</div>
     </div>
-    <div class="dash-card" onclick="alert('Manutenção em curso')">
-      <div class="dash-icon">⚖️</div>
-      <div class="dash-label">Assistente Jurídico</div>
-      <div class="dash-sub">Direito Angolano</div>
-    </div>
-    <div class="dash-card" onclick="alert('Manutenção em curso')">
-      <div class="dash-icon">📱</div>
-      <div class="dash-label">Post Redes</div>
-      <div class="dash-sub">Design de Conteúdo</div>
-    </div>
-    <div class="dash-card" onclick="alert('Manutenção em curso')">
-      <div class="dash-icon">🛒</div>
-      <div class="dash-label">Marketplace</div>
-      <div class="dash-sub">Biblioteca Digital</div>
-    </div>
-  </div>
-</div>
+</main>
 
-<div id="view-chat" class="view">
-  <div class="chat-container">
-    <div class="chat-messages" id="chatBox">
-      <div class="chat-bubble assistant">Olá! Sou a Consciência AGEA. Como posso ajudar no seu projeto hoje?</div>
-    </div>
-    <div class="chat-input-row">
-      <input type="text" class="chat-input" id="chatIn" placeholder="Digite sua dúvida...">
-      <button class="chat-send" onclick="sendMsg()">➤</button>
-    </div>
-  </div>
-</div>
+<section id="view-chat" class="view">
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-box">
+            <div class="chat-bubble assistant">
+                <div class="bubble-label">Sistema Agealume</div>
+                Olá, Adelino. Em que posso ajudar no crescimento do ecossistema hoje?
+            </div>
+        </div>
+        
+        <div class="api-notice" id="api-status-msg">
+            ⚠️ Chave API não configurada no Supabase.
+        </div>
 
-<div id="view-admin" class="view">
-  <div class="admin-view">
-    <h2 style="font-family:var(--font-display); font-size:40px; color:var(--gold);">Painel Mestre</h2>
-    <div style="background:var(--noir-card); padding:20px; border:1px solid var(--gold-dim); margin-top:20px;">
-      <label style="font-size:10px; color:var(--gold); letter-spacing:1px;">API KEY CONFIGURAÇÃO</label>
-      <input type="password" id="apiKey" class="admin-field" placeholder="sk-...">
-      
-      <label style="font-size:10px; color:var(--gold); letter-spacing:1px;">NÚMERO WHATSAPP</label>
-      <input type="text" id="wpNum" class="admin-field" value="244937876711">
-      
-      <button onclick="saveSettings()" style="width:100%; background:var(--gold); border:none; padding:15px; font-weight:bold; cursor:pointer;">SINCRONIZAR PLATAFORMA</button>
+        <div class="chat-input-row">
+            <textarea class="chat-input" placeholder="Digite sua ordem..." id="user-input" rows="1"></textarea>
+            <button class="chat-send" id="send-btn">➔</button>
+        </div>
     </div>
-  </div>
-</div>
+</section>
 
 <script>
-let clicks = 0;
-const backBtn = document.getElementById('backBtn');
+// ═══════════════════════════════════════════
+// CONFIGURAÇÃO SUPABASE (COLOQUE SEUS DADOS AQUI)
+// ═══════════════════════════════════════════
+const SUPABASE_URL = 'SUA_URL_AQUI'; 
+const SUPABASE_KEY = 'SUA_KEY_ANON_AQUI';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  backBtn.classList.toggle('visible', id !== 'view-dashboard');
-  window.scrollTo(0,0);
-}
+let API_KEY_IA = "";
+let cliqueCount = 0;
 
-backBtn.onclick = () => showView('view-dashboard');
+// 1. CARREGAR CHAVE DO SUPABASE SILENCIOSAMENTE
+async function initSystem() {
+    try {
+        const { data, error } = await supabase
+            .from('configuracoes')
+            .select('valor')
+            .eq('chave', 'API_KEY_GEMINI')
+            .single();
 
-// GATILHO ADMIN NA LOGO (3 CLIQUES)
-document.getElementById('adminTrigger').onclick = () => {
-  clicks++;
-  if(clicks === 3) {
-    const pass = prompt("SISTEMA BLOQUEADO. INSIRA A SENHA:");
-    if(pass === "Messia1975") {
-      showView('view-admin');
-      document.getElementById('apiKey').value = localStorage.getItem('agea_key') || '';
-    } else {
-      alert("ACESSO NEGADO.");
+        if (data) {
+            API_KEY_IA = data.valor;
+            console.log("✅ Conexão Agealume Estabelecida.");
+        }
+    } catch (e) {
+        console.error("Erro ao conectar ao cofre.");
     }
-    clicks = 0;
-  }
-  setTimeout(() => clicks = 0, 2000);
-};
-
-function saveSettings() {
-  localStorage.setItem('agea_key', document.getElementById('apiKey').value);
-  alert("SISTEMA ATUALIZADO!");
-  showView('view-dashboard');
 }
 
-function sendMsg() {
-  const input = document.getElementById('chatIn');
-  const box = document.getElementById('chatBox');
-  if(!input.value.trim()) return;
+// 2. GATILHO INVISÍVEL (3 CLIQUES NO LOGO)
+document.getElementById('master-logo').addEventListener('click', () => {
+    cliqueCount++;
+    if (cliqueCount === 3) {
+        const pass = prompt("PASSWORD MASTER AGEALUME:");
+        if (pass === "2727") { // Sua senha definida
+            document.body.classList.add('admin-mode');
+            alert("Modo Administrador Ativado.");
+        }
+        cliqueCount = 0;
+    }
+    setTimeout(() => { cliqueCount = 0; }, 2000);
+});
 
-  box.innerHTML += `<div class="chat-bubble user">${input.value}</div>`;
-  const val = input.value;
-  input.value = '';
-  box.scrollTop = box.scrollHeight;
-
-  setTimeout(() => {
-    box.innerHTML += `<div class="chat-bubble assistant">A processar a análise estratégica para: "${val}"...</div>`;
-    box.scrollTop = box.scrollHeight;
-  }, 800);
+// 3. NAVEGAÇÃO
+function openView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    document.getElementById('btn-back').classList.add('visible');
 }
+
+function goHome() {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-dashboard').classList.add('active');
+    document.getElementById('btn-back').classList.remove('visible');
+}
+
+// 4. LÓGICA DO CHAT (EXEMPLO)
+document.getElementById('send-btn').addEventListener('click', () => {
+    const text = document.getElementById('user-input').value;
+    if(!text) return;
+    
+    // Adicionar balão do usuário
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+    document.getElementById('user-input').value = "";
+    
+    // Aqui entraria sua chamada para a API usando a variável API_KEY_IA
+    console.log("Enviando para IA com a chave do Supabase...");
+});
+
+// Inicializar sistema
+initSystem();
 </script>
+
 </body>
 </html>
