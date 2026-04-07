@@ -1,239 +1,161 @@
-<!DOCTYPE html>
-<html lang="pt-AO">
+<!DOCTYPE html><html lang="pt-AO">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGEALume | Power Engine</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <style>
-        :root {
-            --gold: #c9a84c;
-            --black: #0a0a0a;
-            --card: #141414;
-            --white: #f5f5f5;
-        }
-
-        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--black); color: var(--white); margin: 0; padding: 0; }
-
-        /* HEADER E NAVEGAÇÃO */
-        header { 
-            padding: 20px; border-bottom: 1px solid #222; 
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(10,10,10,0.95); position: sticky; top: 0; z-index: 100;
-        }
-        .logo { font-family: 'Bebas Neue'; font-size: 30px; color: var(--gold); letter-spacing: 2px; }
-        
-        /* CONTAINER PRINCIPAL */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        /* DASHBOARD GRID */
-        .tool-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 20px; margin-top: 30px; 
-        }
-        .tool-card { 
-            background: var(--card); padding: 30px; border-radius: 15px; 
-            border: 1px solid #222; cursor: pointer; transition: 0.3s;
-        }
-        .tool-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .tool-card h3 { font-family: 'Bebas Neue'; font-size: 24px; margin: 15px 0; color: var(--gold); }
-
-        /* ÁREA DE TRABALHO (MOTOR) */
-        .workspace { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--gold); font-weight: 800; margin-bottom: 8px; }
-        
-        input, select, textarea { 
-            width: 100%; background: #1a1a1a; border: 1px solid #333; 
-            padding: 15px; color: white; border-radius: 8px; font-size: 15px;
-        }
-
-        /* EDITOR INTERATIVO */
-        .editor-container { 
-            background: white; color: #111; padding: 40px; 
-            border-radius: 8px; min-height: 400px; margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            line-height: 1.6; outline: none;
-        }
-
-        /* BOTÕES DE AÇÃO */
-        .btn { 
-            padding: 15px 30px; border-radius: 8px; border: none; 
-            font-weight: 800; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-gold { background: var(--gold); color: black; width: 100%; margin-top: 10px; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
-        .btn:hover { opacity: 0.8; transform: scale(1.02); }
-
-        /* FUNIL DE MARKETING */
-        .funnel-tag { 
-            background: rgba(201, 168, 76, 0.1); border: 1px dashed var(--gold);
-            padding: 15px; border-radius: 8px; font-size: 12px; margin-top: 20px;
-        }
-
-        /* LOADER */
-        #loader { display: none; color: var(--gold); text-align: center; padding: 20px; font-weight: 800; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGEALume – Ecossistema Digital Angola</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* [INSERE TODO O CSS QUE VOCÊ JÁ ME ENVIOU AQUI] */
+</style>
 </head>
-<body>
-
-<header>
-    <div class="logo" onclick="location.reload()">AGEALume Engine</div>
-    <div style="font-size: 10px; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 4px;">SISTEMA ATIVO</div>
-</header>
-
-<div class="container">
-    
-    <div id="home-screen">
-        <h1 style="font-family: 'Bebas Neue'; font-size: 45px;">O que vamos <span style="color:var(--gold)">Construir</span> hoje?</h1>
-        <div class="tool-grid">
-            <div class="tool-card" onclick="openTool('ebook')">
-                <span>📘</span>
-                <h3>Gerador de E-Books</h3>
-                <p style="color: #888; font-size: 14px;">Criação de e-books estruturados com capítulos e marketing.</p>
-            </div>
-            <div class="tool-card" onclick="openTool('paper')">
-                <span>🔬</span>
-                <h3>Trabalho Investigativo</h3>
-                <p style="color: #888; font-size: 14px;">Relatórios técnicos, papers e defesas científicas.</p>
-            </div>
-            <div class="tool-card" onclick="openTool('insta')">
-                <span>📸</span>
-                <h3>Posts Instagram</h3>
-                <p style="color: #888; font-size: 14px;">Legendas de conversão e estratégias de carrossel.</p>
-            </div>
-        </div>
+<body><header class="site-header">
+  <div class="logo-img" onclick="goHome()" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+    <img src="data:image/jpeg;base64,[...base64...]" alt="AGEALume" style="height:36px;">
+    <div class="logo"><span>AGEALume</span></div>
+  </div>
+  <button class="back-btn" id="backBtn">Voltar</button>
+</header><!-- VIEWS --><div id="view-dashboard" class="view active">
+  <div class="dashboard-hero">
+    <div class="eyebrow">Painel</div>
+    <h1>Bem-vindo, <span>Usuário</span></h1>
+    <p>Explore seu ecossistema digital em Angola.</p>
+  </div>
+  <div class="gold-divider"></div>
+  <div class="dashboard-grid">
+    <div class="dash-card" data-target="view-chat">
+      <div class="dash-icon">💬</div>
+      <div class="dash-label">Chat AGEA</div>
+      <div class="dash-sub">Interaja com a inteligência AGEA</div>
     </div>
-
-    <div id="workspace" class="workspace">
-        <button class="btn-outline" onclick="location.reload()" style="margin-bottom: 20px;">← Voltar ao Início</button>
-        
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-            
-            <div class="config-panel">
-                <h2 id="tool-name" style="font-family: 'Bebas Neue'; color: var(--gold);">Tool Name</h2>
-                
-                <div class="input-group">
-                    <label>TEMA OU TÍTULO</label>
-                    <input type="text" id="ai-topic" placeholder="Sobre o que vamos escrever?">
-                </div>
-
-                <div class="input-group">
-                    <label>ESTILO DE LINGUAGEM</label>
-                    <select id="ai-style">
-                        <option value="Persuasivo e Vendedor">Persuasivo e Vendedor</option>
-                        <option value="Acadêmico e Técnico">Acadêmico e Técnico</option>
-                        <option value="Executivo e Elite">Executivo e Elite</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label>DETALHES ADICIONAIS (OPCIONAL)</label>
-                    <textarea id="ai-extra" rows="3" placeholder="Algum detalhe específico que deve constar?"></textarea>
-                </div>
-
-                <div id="loader">PROCESSANDO INTELIGÊNCIA...</div>
-                <button class="btn btn-gold" id="btn-generate" onclick="runAI()">GERAR CONTEÚDO AGORA</button>
-
-                <div class="funnel-tag">
-                    <strong>ESTRATÉGIA DE MARKETING:</strong><br>
-                    O sistema irá incluir gatilhos de autoridade e placeholders de QR Code para o teu funil de vendas.
-                </div>
-            </div>
-
-            <div class="editor-panel">
-                <label>EDITOR INTERATIVO (Podes editar o texto diretamente aqui)</label>
-                <div id="editor" class="editor-container" contenteditable="true">
-                    O resultado da IA aparecerá aqui. Podes apagar, escrever e formatar este texto antes de exportar.
-                </div>
-                
-                <div style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button class="btn btn-gold" onclick="exportPDF()">EXPORTAR PDF PROFISSIONAL</button>
-                    <button class="btn btn-outline" onclick="copyText()">COPIAR TEXTO</button>
-                </div>
-            </div>
-
-        </div>
+    <div class="dash-card" data-target="view-marketplace">
+      <div class="dash-icon">📚</div>
+      <div class="dash-label">Marketplace</div>
+      <div class="dash-sub">Veja livros e publicações</div>
     </div>
+    <div class="dash-card" data-target="view-profile">
+      <div class="dash-icon">👤</div>
+      <div class="dash-label">Perfil</div>
+      <div class="dash-sub">Configurações do usuário</div>
+    </div>
+    <div class="dash-card" data-target="view-admin">
+      <div class="dash-icon">⚙️</div>
+      <div class="dash-label">Administração</div>
+      <div class="dash-sub">Acesso restrito</div>
+      <div class="dash-badge">Novo</div>
+    </div>
+  </div>
+</div><div id="view-chat" class="view">
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Escreva sua mensagem..."></textarea>
+      <button class="chat-send" id="chatSend">➤</button>
+    </div>
+  </div>
+</div><div id="view-marketplace" class="view">
+  <div class="market-filters">
+    <button class="filter-btn active">Todos</button>
+    <button class="filter-btn">Grátis</button>
+    <button class="filter-btn">Pago</button>
+  </div>
+  <div class="books-grid">
+    <div class="book-card">
+      <div class="book-cover"><div class="book-cover-img"></div></div>
+      <div class="book-info">
+        <div class="book-cat">Categoria</div>
+        <div class="book-title">Livro 1</div>
+        <div class="book-price free">Grátis</div>
+      </div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover"><div class="book-cover-img"></div></div>
+      <div class="book-info">
+        <div class="book-cat">Categoria</div>
+        <div class="book-title">Livro 2</div>
+        <div class="book-price">$5</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-secondary" id="togglePublish">Publicar Novo</button>
+  <div class="publish-form" id="publishForm">
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input type="text" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descrição</label>
+      <textarea class="form-textarea"></textarea>
+    </div>
+    <button class="btn-primary">Enviar</button>
+  </div>
+</div><div id="view-profile" class="view page-wrap">
+  <h2 class="page-title">Perfil do Usuário</h2>
+  <p class="page-desc">Configurações, preferências e informações pessoais.</p>
+</div><div id="view-admin" class="view page-wrap">
+  <h2 class="page-title">Administração</h2>
+  <p class="page-desc">Área restrita para administradores.</p>
+</div><!-- Toast Notification --><div class="toast" id="toast">Mensagem</div><script>
+// Navegação de Views
+const views = document.querySelectorAll('.view');
+const dashCards = document.querySelectorAll('.dash-card');
+const backBtn = document.getElementById('backBtn');
+let currentView = document.querySelector('.view.active');
 
-</div>
+function showView(viewId) {
+  currentView.classList.remove('active');
+  const newView = document.getElementById(viewId);
+  newView.classList.add('active');
+  currentView = newView;
+  backBtn.classList.toggle('visible', viewId !== 'view-dashboard');
+}
 
-<script>
-    const API_KEY = "SUA_CHAVE_AQUI"; // Coloca a tua chave aqui
-    let currentMode = '';
+dashCards.forEach(card => {
+  card.addEventListener('click', () => {
+    const target = card.getAttribute('data-target');
+    if (target) showView(target);
+  });
+});
 
-    function openTool(mode) {
-        currentMode = mode;
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('workspace').style.display = 'block';
-        
-        const names = { 'ebook': 'E-Book Creator', 'paper': 'Investigative Engine', 'insta': 'Insta Viral Copy' };
-        document.getElementById('tool-name').innerText = names[mode];
-    }
+backBtn.addEventListener('click', () => showView('view-dashboard'));
 
-    async function runAI() {
-        const topic = document.getElementById('ai-topic').value;
-        const style = document.getElementById('ai-style').value;
-        const extra = document.getElementById('ai-extra').value;
+function goHome() { showView('view-dashboard'); }
 
-        if(!topic) return alert("Define o tema primeiro.");
+// Chat functionality
+const chatSend = document.getElementById('chatSend');
+const chatInput = document.getElementById('chatInput');
+const chatMessages = document.getElementById('chatMessages');
 
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('btn-generate').style.display = 'none';
+chatSend.addEventListener('click', () => {
+  const msg = chatInput.value.trim();
+  if(!msg) return;
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble user';
+  userBubble.textContent = msg;
+  chatMessages.appendChild(userBubble);
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Lógica de Prompt Específica para cada botão
-        let prompt = `Atua como um especialista em ${currentMode}. Escreve sobre "${topic}" no estilo "${style}". `;
-        if(currentMode === 'ebook') prompt += "Gera um título chamativo e 5 capítulos bem estruturados.";
-        if(currentMode === 'paper') prompt += "Cria um resumo, introdução, metodologia e conclusão científica.";
-        if(currentMode === 'insta') prompt += "Gera uma legenda viral, 5 hashtags e uma ideia de design para o post.";
-        if(extra) prompt += ` Inclui estes detalhes: ${extra}`;
+  // Resposta simples do assistant
+  const assistantBubble = document.createElement('div');
+  assistantBubble.className = 'chat-bubble assistant';
+  assistantBubble.innerHTML = '<div class="bubble-label">AGEA</div>Recebido: ' + msg;
+  chatMessages.appendChild(assistantBubble);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+});
 
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await res.json();
-            const text = data.candidates[0].content.parts[0].text;
-            
-            // Converte quebras de linha para HTML
-            document.getElementById('editor').innerHTML = text.replace(/\n/g, '<br>');
-        } catch (e) {
-            alert("Erro ao conectar com a IA. Verifica a tua chave.");
-        } finally {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('btn-generate').style.display = 'block';
-        }
-    }
+// Toggle publish form
+const togglePublish = document.getElementById('togglePublish');
+const publishForm = document.getElementById('publishForm');
+togglePublish.addEventListener('click', () => {
+  publishForm.classList.toggle('visible');
+});
 
-    function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const content = document.getElementById('editor').innerText;
-        
-        doc.setFontSize(16);
-        doc.text("AGEALUME DIGITAL - RELATÓRIO ELITE", 20, 20);
-        doc.setFontSize(11);
-        const lines = doc.splitTextToSize(content, 170);
-        doc.text(lines, 20, 40);
-        doc.save(`AGEALume_${currentMode}.pdf`);
-    }
-
-    function copyText() {
-        const text = document.getElementById('editor').innerText;
-        navigator.clipboard.writeText(text);
-        alert("Texto copiado para a área de transferência!");
-    }
-</script>
-
-</body>
+// Toast example
+function showToast(message, duration=3000){
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), duration);
+}
+</script></body>
 </html>
